@@ -1,0 +1,19 @@
+{
+    "name": "ch32v-gpio",
+    "version": "0.1.0",
+    "description": "A library for doing basic GPIO stuff on CH32VX",
+    "keywords": "ch32v, gpio, i2c, spi, digital",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://gist.github.com/bitbank2/13686b8a153a0b3a06839f4fa00589cb"
+    },
+    "authors":
+    {
+        "name": "larry",
+        "url": "https://gist.github.com/bitbank2"
+    },
+    "license": "MIT",
+    "frameworks": ["noneos-sdk", "arduino"],
+    "platforms": "ch32v"
+}

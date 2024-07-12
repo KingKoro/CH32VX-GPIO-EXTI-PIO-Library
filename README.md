@@ -6,6 +6,9 @@
     - My redistribution adds external interrupt functionality.
 - The basic GPIO manipulation methods use an 8-Bit hex-scheme to represent the pin number (e.g. 0xC7 = Pin C7)
 - The provided example in main.c does not include any button debouncing logic. It is based on the WCH example: https://github.com/openwch/ch32v20x/tree/main/EVT/EXAM/EXTI/EXTI0/User
+- For the shortest response delay it is recommended to utilize External Interrupt on Pins, regardless of the Port, with the numbers being 0, 1, 2, 3, 4, 5 or 10, as Pins 5-9 and 10-15 each share their interrupt handlers.
+    - For Interrupt Events on Pins 5 trough 9 and 10 through 15, each line is checked and the specified service routine is called successively, starting from the lowest number. So in case of multiple interrupts, happening simultaneously on multiple pins in the same handler group,
+        each subroutine will be called in the order of their numbering, starting from the lowest number.
 
 ## Installation
 ### Prequisites

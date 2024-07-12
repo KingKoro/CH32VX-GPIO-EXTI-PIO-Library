@@ -340,22 +340,22 @@ void EXTI9_5_IRQHandler(void)
         (*f_body_exti5)();
         EXTI_ClearITPendingBit(EXTI_Line5);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line6)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line6)!=RESET)
     {
         (*f_body_exti6)();
         EXTI_ClearITPendingBit(EXTI_Line6);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line7)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line7)!=RESET)
     {
         (*f_body_exti7)();
         EXTI_ClearITPendingBit(EXTI_Line7);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line8)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line8)!=RESET)
     {
         (*f_body_exti8)();
         EXTI_ClearITPendingBit(EXTI_Line8);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line9)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line9)!=RESET)
     {
         (*f_body_exti9)();
         EXTI_ClearITPendingBit(EXTI_Line9);     /* Clear Flag */
@@ -376,27 +376,27 @@ void EXTI15_10_IRQHandler(void)
         (*f_body_exti10)();
         EXTI_ClearITPendingBit(EXTI_Line10);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line11)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line11)!=RESET)
     {
         (*f_body_exti11)();
         EXTI_ClearITPendingBit(EXTI_Line11);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line12)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line12)!=RESET)
     {
         (*f_body_exti12)();
         EXTI_ClearITPendingBit(EXTI_Line12);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line13)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line13)!=RESET)
     {
         (*f_body_exti13)();
         EXTI_ClearITPendingBit(EXTI_Line13);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line14)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line14)!=RESET)
     {
         (*f_body_exti14)();
         EXTI_ClearITPendingBit(EXTI_Line14);     /* Clear Flag */
     }
-    else if(EXTI_GetITStatus(EXTI_Line15)!=RESET)
+    if(EXTI_GetITStatus(EXTI_Line15)!=RESET)
     {
         (*f_body_exti15)();
         EXTI_ClearITPendingBit(EXTI_Line15);     /* Clear Flag */

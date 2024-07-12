@@ -224,13 +224,22 @@ void pinInterrupt(uint8_t u8Pin, int iMode, FunctionalState NewState, EXTITrigge
     EXTI_InitStructure.EXTI_LineCmd = NewState;
     EXTI_Init(&EXTI_InitStructure);
     // Configure NVIC Structure
-    if (u8GPIO == GPIO_PinSource0) NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
+    if (u8GPIO == GPIO_PinSource0) { NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;   f_body_exti0 = func; }
     else if (u8GPIO == GPIO_PinSource1) { NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;   f_body_exti1 = func; }
-    else if (u8GPIO == GPIO_PinSource2) NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
-    else if (u8GPIO == GPIO_PinSource3) NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
-    else if (u8GPIO == GPIO_PinSource4) NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
-    else if (u8GPIO >= GPIO_PinSource5 && u8GPIO <= GPIO_PinSource9) NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
-    else if (u8GPIO >= GPIO_PinSource10 && u8GPIO <= GPIO_PinSource15) NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+    else if (u8GPIO == GPIO_PinSource2) { NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;   f_body_exti2 = func; }
+    else if (u8GPIO == GPIO_PinSource3) { NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;   f_body_exti3 = func; }
+    else if (u8GPIO == GPIO_PinSource4) { NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;   f_body_exti4 = func; }
+    else if (u8GPIO == GPIO_PinSource5) { NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;   f_body_exti5 = func; }
+    else if (u8GPIO == GPIO_PinSource6) { NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;   f_body_exti6 = func; }
+    else if (u8GPIO == GPIO_PinSource7) { NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;   f_body_exti7 = func; }
+    else if (u8GPIO == GPIO_PinSource8) { NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;   f_body_exti8 = func; }
+    else if (u8GPIO == GPIO_PinSource9) { NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;   f_body_exti9 = func; }
+    else if (u8GPIO == GPIO_PinSource10) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti10 = func; }
+    else if (u8GPIO == GPIO_PinSource11) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti11 = func; }
+    else if (u8GPIO == GPIO_PinSource12) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti12 = func; }
+    else if (u8GPIO == GPIO_PinSource13) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti13 = func; }
+    else if (u8GPIO == GPIO_PinSource14) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti14 = func; }
+    else if (u8GPIO == GPIO_PinSource15) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti15 = func; }
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelCmd = NewState;

@@ -48,15 +48,15 @@
 #define FALSE 0
 
 /*********************************************************************
- * @fn      pinA1_interrupt_handler()
+ * @fn      pinB13_interrupt_handler()
  * 
- * @brief   Interrupt Service Routine for Pin A1 event.
+ * @brief   Interrupt Service Routine for Pin B13 event.
  *
  * @return  none
  */
-void pinA1_interrupt_handler(void)
+void pinB13_interrupt_handler(void)
 {
-    // When A1 interrupt, print message and toggle LED state
+    // When B13 interrupt, print message and toggle LED state
     printf("Run at EXTI\r\n");
     digitalWrite(0xA0, (1 - digitalRead(0xA0)));
 }
@@ -78,8 +78,8 @@ int main(void)
     printf("SystemClk:%d\r\n", SystemCoreClock);
     printf("EXTI0 Test\r\n");
 
-    // Enable Interrupt
-    pinInterrupt(0xA1, INPUT_PULLUP, ENABLE, EXTI_Trigger_Falling, pinA1_interrupt_handler);
+    // Enable Interrupt (0xD = 13)
+    pinInterrupt(0xBD, INPUT_PULLUP, ENABLE, EXTI_Trigger_Falling, pinB13_interrupt_handler);
 
     // Set LED pin as output
     pinMode(0xA0, OUTPUT);

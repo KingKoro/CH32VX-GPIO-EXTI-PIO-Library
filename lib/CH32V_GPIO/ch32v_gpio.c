@@ -28,7 +28,22 @@ void (*f_body_exti12)(void);
 void (*f_body_exti13)(void);
 void (*f_body_exti14)(void);
 void (*f_body_exti15)(void);
+#if defined(CH32X035) || defined(CH32X033)
+void (*f_body_exti16)(void);
+void (*f_body_exti17)(void);
+void (*f_body_exti18)(void);
+void (*f_body_exti19)(void);
+void (*f_body_exti20)(void);
+void (*f_body_exti21)(void);
+void (*f_body_exti22)(void);
+void (*f_body_exti23)(void);
+#endif
 // EXTI ISR, placeholder declaration
+#if defined(CH32X035) || defined(CH32X033)
+void EXTI7_0_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
+void EXTI15_8_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
+void EXTI25_16_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
+#else
 void EXTI0_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void EXTI1_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void EXTI2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -36,6 +51,7 @@ void EXTI3_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void EXTI4_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void EXTI9_5_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void EXTI15_10_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
+#endif
 
 #ifdef BITBANG
 uint8_t u8SDA_Pin, u8SCL_Pin;
@@ -87,10 +103,12 @@ void pinMode(uint8_t u8Pin, int iMode)
     	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
         GPIO_Init(GPIOC, &GPIO_InitStructure);
     	break;
+    #if !defined(CH32X035) && !defined(CH32X033)
     case 0xd0:
     	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
         GPIO_Init(GPIOD, &GPIO_InitStructure);
     	break;
+    #endif
     }
 } /* pinMode() */
 
@@ -117,9 +135,11 @@ uint8_t digitalRead(uint8_t u8Pin)
     case 0xc0:
     	u8Value = GPIO_ReadInputDataBit(GPIOC, u32GPIO);
     	break;
+    #if !defined(CH32X035) && !defined(CH32X033)
     case 0xd0:
     	u8Value = GPIO_ReadInputDataBit(GPIOD, u32GPIO);
     	break;
+    #endif
     }
     return u8Value;
 } /* digitalRead() */
@@ -149,9 +169,11 @@ void digitalWrite(uint8_t u8Pin, uint8_t u8Value)
 	case 0xc0:
 		GPIO_WriteBit(GPIOC, u32GPIO, u8Value);
 		break;
+    #if !defined(CH32X035) && !defined(CH32X033)
 	case 0xd0:
 		GPIO_WriteBit(GPIOD, u32GPIO, u8Value);
 		break;
+    #endif
 	}
 } /* digitalWrite() */
 
@@ -211,11 +233,13 @@ void pinInterrupt(uint8_t u8Pin, int iMode, FunctionalState NewState, EXTITrigge
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, u8GPIO);
             break;
+        #if !defined(CH32X035) && !defined(CH32X033)
         case 0xd0:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOD, ENABLE);
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             GPIO_EXTILineConfig(GPIO_PortSourceGPIOD, u8GPIO);
             break;
+        #endif
     }
     // Configure EXTI Structure
     EXTI_InitStructure.EXTI_Line = u32GPIO;
@@ -224,6 +248,32 @@ void pinInterrupt(uint8_t u8Pin, int iMode, FunctionalState NewState, EXTITrigge
     EXTI_InitStructure.EXTI_LineCmd = NewState;
     EXTI_Init(&EXTI_InitStructure);
     // Configure NVIC Structure
+    #if defined(CH32X035) || defined(CH32X033)
+    if (u8GPIO == GPIO_PinSource0) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti0 = func; }
+    else if (u8GPIO == GPIO_PinSource1) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti1 = func; }
+    else if (u8GPIO == GPIO_PinSource2) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti2 = func; }
+    else if (u8GPIO == GPIO_PinSource3) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti3 = func; }
+    else if (u8GPIO == GPIO_PinSource4) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti4 = func; }
+    else if (u8GPIO == GPIO_PinSource5) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti5 = func; }
+    else if (u8GPIO == GPIO_PinSource6) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti6 = func; }
+    else if (u8GPIO == GPIO_PinSource7) { NVIC_InitStructure.NVIC_IRQChannel = EXTI7_0_IRQn;   f_body_exti7 = func; }
+    else if (u8GPIO == GPIO_PinSource8) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti8 = func; }
+    else if (u8GPIO == GPIO_PinSource9) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti9 = func; }
+    else if (u8GPIO == GPIO_PinSource10) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti10 = func; }
+    else if (u8GPIO == GPIO_PinSource11) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti11 = func; }
+    else if (u8GPIO == GPIO_PinSource12) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti12 = func; }
+    else if (u8GPIO == GPIO_PinSource13) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti13 = func; }
+    else if (u8GPIO == GPIO_PinSource14) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti14 = func; }
+    else if (u8GPIO == GPIO_PinSource15) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_8_IRQn;   f_body_exti15 = func; }
+    else if (u8GPIO == GPIO_PinSource16) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti16 = func; }
+    else if (u8GPIO == GPIO_PinSource17) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti17 = func; }
+    else if (u8GPIO == GPIO_PinSource18) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti18 = func; }
+    else if (u8GPIO == GPIO_PinSource19) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti19 = func; }
+    else if (u8GPIO == GPIO_PinSource20) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti20 = func; }
+    else if (u8GPIO == GPIO_PinSource21) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti21 = func; }
+    else if (u8GPIO == GPIO_PinSource22) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti22 = func; }
+    else if (u8GPIO == GPIO_PinSource23) { NVIC_InitStructure.NVIC_IRQChannel = EXTI25_16_IRQn;   f_body_exti23 = func; }
+    #else
     if (u8GPIO == GPIO_PinSource0) { NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;   f_body_exti0 = func; }
     else if (u8GPIO == GPIO_PinSource1) { NVIC_InitStructure.NVIC_IRQChannel = EXTI1_IRQn;   f_body_exti1 = func; }
     else if (u8GPIO == GPIO_PinSource2) { NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;   f_body_exti2 = func; }
@@ -240,11 +290,170 @@ void pinInterrupt(uint8_t u8Pin, int iMode, FunctionalState NewState, EXTITrigge
     else if (u8GPIO == GPIO_PinSource13) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti13 = func; }
     else if (u8GPIO == GPIO_PinSource14) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti14 = func; }
     else if (u8GPIO == GPIO_PinSource15) { NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;   f_body_exti15 = func; }
+    #endif
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelCmd = NewState;
     NVIC_Init(&NVIC_InitStructure);
 }
+
+
+#if defined(CH32X035) || defined(CH32X033)
+
+/*********************************************************************
+ * @fn      EXTI7_0_IRQHandler
+ *
+ * @brief   This function handles EXTI7_0 ISR.
+ *
+ * @return  none
+ */
+void EXTI7_0_IRQHandler(void)
+{
+    if(EXTI_GetITStatus(EXTI_Line0)!=RESET)
+    {
+        (*f_body_exti0)();
+        EXTI_ClearITPendingBit(EXTI_Line0);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
+    {
+        (*f_body_exti1)();
+        EXTI_ClearITPendingBit(EXTI_Line1);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line2)!=RESET)
+    {
+        (*f_body_exti2)();
+        EXTI_ClearITPendingBit(EXTI_Line2);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line3)!=RESET)
+    {
+        (*f_body_exti3)();
+        EXTI_ClearITPendingBit(EXTI_Line3);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line4)!=RESET)
+    {
+        (*f_body_exti4)();
+        EXTI_ClearITPendingBit(EXTI_Line4);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line5)!=RESET)
+    {
+        (*f_body_exti5)();
+        EXTI_ClearITPendingBit(EXTI_Line5);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line6)!=RESET)
+    {
+        (*f_body_exti6)();
+        EXTI_ClearITPendingBit(EXTI_Line6);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line7)!=RESET)
+    {
+        (*f_body_exti7)();
+        EXTI_ClearITPendingBit(EXTI_Line7);     /* Clear Flag */
+    }
+}
+
+/*********************************************************************
+ * @fn      EXTI15_8_IRQHandler
+ *
+ * @brief   This function handles EXTI15_8 ISR.
+ *
+ * @return  none
+ */
+void EXTI15_8_IRQHandler(void)
+{
+    if(EXTI_GetITStatus(EXTI_Line8)!=RESET)
+    {
+        (*f_body_exti8)();
+        EXTI_ClearITPendingBit(EXTI_Line8);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line9)!=RESET)
+    {
+        (*f_body_exti9)();
+        EXTI_ClearITPendingBit(EXTI_Line9);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line10)!=RESET)
+    {
+        (*f_body_exti10)();
+        EXTI_ClearITPendingBit(EXTI_Line10);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line11)!=RESET)
+    {
+        (*f_body_exti11)();
+        EXTI_ClearITPendingBit(EXTI_Line11);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line12)!=RESET)
+    {
+        (*f_body_exti12)();
+        EXTI_ClearITPendingBit(EXTI_Line12);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line13)!=RESET)
+    {
+        (*f_body_exti13)();
+        EXTI_ClearITPendingBit(EXTI_Line13);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line14)!=RESET)
+    {
+        (*f_body_exti14)();
+        EXTI_ClearITPendingBit(EXTI_Line14);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line15)!=RESET)
+    {
+        (*f_body_exti15)();
+        EXTI_ClearITPendingBit(EXTI_Line15);     /* Clear Flag */
+    }
+}
+
+/*********************************************************************
+ * @fn      EXTI25_16_IRQHandler
+ *
+ * @brief   This function handles EXTI25_16 ISR.
+ *
+ * @return  none
+ */
+void EXTI25_16_IRQHandler(void)
+{
+    if(EXTI_GetITStatus(EXTI_Line16)!=RESET)
+    {
+        (*f_body_exti16)();
+        EXTI_ClearITPendingBit(EXTI_Line16);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line17)!=RESET)
+    {
+        (*f_body_exti17)();
+        EXTI_ClearITPendingBit(EXTI_Line17);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line18)!=RESET)
+    {
+        (*f_body_exti18)();
+        EXTI_ClearITPendingBit(EXTI_Line18);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line19)!=RESET)
+    {
+        (*f_body_exti19)();
+        EXTI_ClearITPendingBit(EXTI_Line19);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line20)!=RESET)
+    {
+        (*f_body_exti20)();
+        EXTI_ClearITPendingBit(EXTI_Line20);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line21)!=RESET)
+    {
+        (*f_body_exti21)();
+        EXTI_ClearITPendingBit(EXTI_Line21);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line22)!=RESET)
+    {
+        (*f_body_exti22)();
+        EXTI_ClearITPendingBit(EXTI_Line22);     /* Clear Flag */
+    }
+    if(EXTI_GetITStatus(EXTI_Line23)!=RESET)
+    {
+        (*f_body_exti23)();
+        EXTI_ClearITPendingBit(EXTI_Line23);     /* Clear Flag */
+    }
+}
+
+#else
 
 /*********************************************************************
  * @fn      EXTI0_IRQHandler
@@ -402,6 +611,8 @@ void EXTI15_10_IRQHandler(void)
         EXTI_ClearITPendingBit(EXTI_Line15);     /* Clear Flag */
     }
 }
+
+#endif
 
 #ifdef BITBANG
 uint8_t SDA_READ(void)
@@ -726,6 +937,7 @@ int I2CTest(uint8_t u8Addr)
 } /* I2CTest() */
 #endif // BITBANG
 
+#if !defined(CH32X035) && !defined(CH32X033)
 // Put CPU into standby mode for a multiple of 82ms tick increments
 // max ticks value is 63
 void Standby82ms(uint8_t iTicks)
@@ -765,6 +977,7 @@ void Standby82ms(uint8_t iTicks)
     GPIO_DeInit(GPIOD);
 
 } /* Standby82ms() */
+#endif
 
 //
 // Ramp an LED brightness with PWM from 0 to 50%

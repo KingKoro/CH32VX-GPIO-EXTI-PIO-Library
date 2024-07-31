@@ -38,20 +38,20 @@ void delay(int i);
 //
 // Digital pin functions use a numbering scheme to make it easier to map the
 // pin number to a port name and number
-// The GPIO ports A-D become the most significant nibble of the pin number
-// for example, to use Port C pin 7 (C7), use the pin number 0xC7
+// The GPIO ports A-D become the most significant byte of the pin number
+// for example, to use Port C pin 7 (C7), use the pin number 0x0C07
 //
-void pinMode(uint8_t u8Pin, int iMode);
-uint8_t digitalRead(uint8_t u8Pin);
-void digitalWrite(uint8_t u8Pin, uint8_t u8Value);
-void pinInterrupt(uint8_t u8Pin, int iMode, FunctionalState NewState, EXTITrigger_TypeDef TriggerType, void (*func)(void));
+void pinMode(uint16_t u16Pin, int iMode);
+uint8_t digitalRead(uint16_t u16Pin);
+void digitalWrite(uint16_t u16Pin, uint8_t u8Value);
+void pinInterrupt(uint16_t u16Pin, int iMode, FunctionalState NewState, EXTITrigger_TypeDef TriggerType, void (*func)(void));
 
 // The Wire library is a C++ class; I've created a work-alike to my
 // BitBang_I2C API which is a set of C functions to simplify I2C
 #ifdef BITBANG
 void I2CSetSpeed(int iSpeed);
 int I2CReadRegister(uint8_t iAddr, uint8_t u8Register, uint8_t *pData, int iLen);
-void I2CInit(uint8_t u8SDA, uint8_t u8SCL, int iSpeed);
+void I2CInit(uint16_t u16SDA, uint16_t u16SCL, int iSpeed);
 #else
 void I2CInit(int iSpeed);
 #endif
@@ -67,7 +67,7 @@ void SPI_begin(int iSpeed, int iMode);
 
 // Random stuff
 void Standby82ms(uint8_t iTicks);
-void breatheLED(uint8_t u8Pin, int iPeriod);
+void breatheLED(uint16_t u16Pin, int iPeriod);
 
 #ifdef __cplusplus
 }

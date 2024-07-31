@@ -58,7 +58,7 @@ void pinB13_interrupt_handler(void)
 {
     // When B13 interrupt, print message and toggle LED state
     printf("Run at EXTI\r\n");
-    digitalWrite(0xA0, (1 - digitalRead(0xA0)));
+    digitalWrite(0x0A00, (1 - digitalRead(0x0A00)));
 }
 
 /*********************************************************************
@@ -78,12 +78,12 @@ int main(void)
     printf("SystemClk:%d\r\n", SystemCoreClock);
     printf("EXTI0 Test\r\n");
 
-    // Enable Interrupt (0xD = 13)
-    pinInterrupt(0xBD, INPUT_PULLUP, ENABLE, EXTI_Trigger_Falling, pinB13_interrupt_handler);
+    // Enable Interrupt (0x0B0D = Pin B13)
+    pinInterrupt(0x0B0D, INPUT_PULLUP, ENABLE, EXTI_Trigger_Falling, pinB13_interrupt_handler);
 
     // Set LED pin as output
-    pinMode(0xA0, OUTPUT);
-    digitalWrite(0xA0, Bit_RESET);
+    pinMode(0x0A00, OUTPUT);
+    digitalWrite(0x0A00, Bit_RESET);
 
     while(1)
     {

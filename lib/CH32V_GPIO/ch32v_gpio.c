@@ -54,7 +54,7 @@ void EXTI15_10_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")))
 #endif
 
 #ifdef BITBANG
-uint8_t u8SDA_Pin, u8SCL_Pin;
+uint16_t u16SDA_Pin, u16SCL_Pin;
 int iDelay = 1;
 #endif
 
@@ -70,17 +70,17 @@ void delay(int i)
  *
  * @brief   Set pin mode, analog to Arduino API.
  * 
- * @param   u8Pin           Pin number with 2 x nibble numbering scheme (e.g 0xC7 = Pin C7)
+ * @param   u16Pin          Pin number with 2 x byte numbering scheme (e.g 0x0C07 = Pin C7)
  * @param   iMode           Pin Mode (can be either OUTPUT, INPUT, INPUT_PULLUP or INPUT_PULLDOWN)
  * 
  * @return  None
  */
-void pinMode(uint8_t u8Pin, int iMode)
+void pinMode(uint16_t u16Pin, int iMode)
 {
     GPIO_InitTypeDef GPIO_InitStructure = {0};
-    if (u8Pin < 0xa0 || u8Pin > 0xdf) return; // invalid pin number
+    if (u16Pin < 0x0a00 || u16Pin > 0x0dff) return; // invalid pin number
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 << (u8Pin & 0xf);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 << (u16Pin & 0xff);
     if (iMode == OUTPUT)
     	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     else if (iMode == INPUT)
@@ -90,21 +90,21 @@ void pinMode(uint8_t u8Pin, int iMode)
     else if (iMode == INPUT_PULLDOWN)
     	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    switch (u8Pin & 0xf0) {
-    case 0xa0:
+    switch (u16Pin & 0x0f00) {
+    case 0x0a00:
     	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
         GPIO_Init(GPIOA, &GPIO_InitStructure);
     	break;
-    case 0xb0:
+    case 0x0b00:
     	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
         GPIO_Init(GPIOB, &GPIO_InitStructure);
     	break;
-    case 0xc0:
+    case 0x0c00:
     	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
         GPIO_Init(GPIOC, &GPIO_InitStructure);
     	break;
     #if !defined(CH32X035) && !defined(CH32X033)
-    case 0xd0:
+    case 0x0d00:
     	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
         GPIO_Init(GPIOD, &GPIO_InitStructure);
     	break;
@@ -117,26 +117,26 @@ void pinMode(uint8_t u8Pin, int iMode)
  *
  * @brief   Digital Read analog to Arduino API.
  * 
- * @param   u8Pin           Pin number with 2 x nibble numbering scheme (e.g 0xC7 = Pin C7)
+ * @param   u16Pin           Pin number with 2 x byte numbering scheme (e.g 0x0C07 = Pin C7)
  * 
  * @return  Binary value on digital input pin. 1 or 0
  */
-uint8_t digitalRead(uint8_t u8Pin)
+uint8_t digitalRead(uint16_t u16Pin)
 {
-    uint32_t u32GPIO = GPIO_Pin_0 << (u8Pin & 0xf);
+    uint32_t u32GPIO = GPIO_Pin_0 << (u16Pin & 0xff);
     uint8_t u8Value = 0;
-    switch (u8Pin & 0xf0) {
-    case 0xa0:
+    switch (u16Pin & 0x0f00) {
+    case 0x0a00:
     	u8Value = GPIO_ReadInputDataBit(GPIOA, u32GPIO);
     	break;
-    case 0xb0:
+    case 0x0b00:
     	u8Value = GPIO_ReadInputDataBit(GPIOB, u32GPIO);
     	break;
-    case 0xc0:
+    case 0x0c00:
     	u8Value = GPIO_ReadInputDataBit(GPIOC, u32GPIO);
     	break;
     #if !defined(CH32X035) && !defined(CH32X033)
-    case 0xd0:
+    case 0x0d00:
     	u8Value = GPIO_ReadInputDataBit(GPIOD, u32GPIO);
     	break;
     #endif
@@ -149,28 +149,28 @@ uint8_t digitalRead(uint8_t u8Pin)
  *
  * @brief   Digital Write analog to Arduino API.
  * 
- * @param   u8Pin           Pin number with 2 x nibble numbering scheme (e.g 0xC7 = Pin C7)
+ * @param   u16Pin          Pin number with 2 x byte numbering scheme (e.g 0x0C07 = Pin C7)
  * @param   u8Value         New value for digital output. Either Bit_SET or Bit_RESET (1 or 0). See @ref BitAction
  * 
  * @return  none
  */
-void digitalWrite(uint8_t u8Pin, uint8_t u8Value)
+void digitalWrite(uint16_t u16Pin, uint8_t u8Value)
 {
-	uint32_t u32GPIO = GPIO_Pin_0 << (u8Pin & 0xf);
+	uint32_t u32GPIO = GPIO_Pin_0 << (u16Pin & 0xff);
 	u8Value = (u8Value) ? Bit_SET : Bit_RESET;
 
-	switch (u8Pin & 0xf0) {
-	case 0xa0:
+	switch (u16Pin & 0x0f00) {
+	case 0x0a00:
 		GPIO_WriteBit(GPIOA, u32GPIO, u8Value);
 		break;
-	case 0xb0:
+	case 0x0b00:
 		GPIO_WriteBit(GPIOB, u32GPIO, u8Value);
 		break;
-	case 0xc0:
+	case 0x0c00:
 		GPIO_WriteBit(GPIOC, u32GPIO, u8Value);
 		break;
     #if !defined(CH32X035) && !defined(CH32X033)
-	case 0xd0:
+	case 0x0d00:
 		GPIO_WriteBit(GPIOD, u32GPIO, u8Value);
 		break;
     #endif
@@ -184,7 +184,7 @@ void digitalWrite(uint8_t u8Pin, uint8_t u8Value)
  *
  * @brief   This function initializes the interrupt generation for external events on GPIO Pins.
  * 
- * @param   u8Pin           Pin number with 2 x nibble numbering scheme (e.g 0xC7 = Pin C7)
+ * @param   u16Pin          Pin number with 2 x byte numbering scheme (e.g 0x0C07 = Pin C7)
  * @param   iMode           Pin Mode (can be either INPUT, INPUT_PULLUP or INPUT_PULLDOWN)
  * @param   NewState        New state for interrupt generation after function call (either ENABLE or DISABLE) see @ref FunctionalState
  * @param   TriggerType     Trigger type (either EXTI_Trigger_Rising, EXTI_Trigger_Falling or EXTI_Trigger_Rising_Falling) see @ref EXTITrigger_TypeDef
@@ -192,18 +192,18 @@ void digitalWrite(uint8_t u8Pin, uint8_t u8Value)
  * 
  * @return  none
  */
-void pinInterrupt(uint8_t u8Pin, int iMode, FunctionalState NewState, EXTITrigger_TypeDef TriggerType, void (*func)(void))
+void pinInterrupt(uint16_t u16Pin, int iMode, FunctionalState NewState, EXTITrigger_TypeDef TriggerType, void (*func)(void))
 {
     GPIO_InitTypeDef GPIO_InitStructure = {0};
     EXTI_InitTypeDef EXTI_InitStructure = {0};
     NVIC_InitTypeDef NVIC_InitStructure = {0};
 
-    if (u8Pin < 0xa0 || u8Pin > 0xdf) return; // invalid pin number
+    if (u16Pin < 0x0a00 || u16Pin > 0x0dff) return; // invalid pin number
     // Get Pin number GPIO_Pin_X
-    uint32_t u32GPIO = GPIO_Pin_0 << (u8Pin & 0xf);     // GPIO_Pin_X = EXTI_LineX
+    uint32_t u32GPIO = GPIO_Pin_0 << (u16Pin & 0xff);       // GPIO_Pin_X = EXTI_LineX
     // Convert GPIO_Pin_X to GPIO_PinSourceX
     uint32_t u32GPIO_temp = u32GPIO;
-    uint8_t u8GPIO = 0;                                 // GPIO_PinSourceX
+    uint8_t u8GPIO = 0;                                     // GPIO_PinSourceX
     while (u32GPIO_temp >>= 1) u8GPIO++;
     // Set pin to input
     GPIO_InitStructure.GPIO_Pin = u32GPIO;
@@ -216,25 +216,25 @@ void pinInterrupt(uint8_t u8Pin, int iMode, FunctionalState NewState, EXTITrigge
     else if (iMode == INPUT_PULLDOWN)
     	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
     // Port-specific enable
-    switch (u8Pin & 0xf0) 
+    switch (u16Pin & 0x0f00)
     {
-        case 0xa0:
+        case 0x0a00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA, ENABLE);
             GPIO_Init(GPIOA, &GPIO_InitStructure);
             GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, u8GPIO);
             break;
-        case 0xb0:
+        case 0x0b00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOB, ENABLE);
             GPIO_Init(GPIOB, &GPIO_InitStructure);
             GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, u8GPIO);
             break;
-        case 0xc0:
+        case 0x0c00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOC, ENABLE);
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, u8GPIO);
             break;
         #if !defined(CH32X035) && !defined(CH32X033)
-        case 0xd0:
+        case 0x0d00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOD, ENABLE);
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             GPIO_EXTILineConfig(GPIO_PortSourceGPIOD, u8GPIO);
@@ -617,25 +617,25 @@ void EXTI15_10_IRQHandler(void)
 #ifdef BITBANG
 uint8_t SDA_READ(void)
 {
-	return digitalRead(u8SDA_Pin);
+	return digitalRead(u16SDA_Pin);
 }
 void SDA_HIGH(void)
 {
-	pinMode(u8SDA_Pin, INPUT);
+	pinMode(u16SDA_Pin, INPUT);
 }
 void SDA_LOW(void)
 {
-	pinMode(u8SDA_Pin, OUTPUT);
-	digitalWrite(u8SDA_Pin, 0);
+	pinMode(u16SDA_Pin, OUTPUT);
+	digitalWrite(u16SDA_Pin, 0);
 }
 void SCL_HIGH(void)
 {
-	pinMode(u8SCL_Pin, INPUT);
+	pinMode(u16SCL_Pin, INPUT);
 }
 void SCL_LOW(void)
 {
-	pinMode(u8SCL_Pin, OUTPUT);
-	digitalWrite(u8SCL_Pin, 0);
+	pinMode(u16SCL_Pin, OUTPUT);
+	digitalWrite(u16SCL_Pin, 0);
 }
 void I2CSetSpeed(int iSpeed)
 {
@@ -643,10 +643,10 @@ void I2CSetSpeed(int iSpeed)
 	else if (iSpeed >= 100000) iDelay = 10;
 	else iDelay = 20;
 }
-void I2CInit(uint8_t u8SDA, uint8_t u8SCL, int iSpeed)
+void I2CInit(uint16_t u16SDA, uint16_t u16SCL, int iSpeed)
 {
-	u8SDA_Pin = u8SDA;
-	u8SCL_Pin = u8SCL;
+	u16SDA_Pin = u16SDA;
+	u16SCL_Pin = u16SCL;
 	if (iSpeed >= 400000) iDelay = 1;
 	else if (iSpeed >= 100000) iDelay = 10;
 	else iDelay = 20;
@@ -983,11 +983,11 @@ void Standby82ms(uint8_t iTicks)
 // Ramp an LED brightness with PWM from 0 to 50%
 // The period represents the total up+down time in milliseconds
 //
-void breatheLED(uint8_t u8Pin, int iPeriod)
+void breatheLED(uint16_t u16Pin, int iPeriod)
 {
 	int i, j, iStep, iCount, iOnTime;
 
-	pinMode(u8Pin, OUTPUT);
+	pinMode(u16Pin, OUTPUT);
 	// Use a pwm freq of 1000hz and 50 steps up then 50 steps down
 	iStep = 10000/iPeriod; // us per step
 	iCount = iPeriod / 20;
@@ -995,9 +995,9 @@ void breatheLED(uint8_t u8Pin, int iPeriod)
 	iOnTime = 0;
 	for (i=0; i<iCount; i++) {
 		for (j=0; j<20; j++) { // 20ms per step
-			digitalWrite(u8Pin, 1); // on period
+			digitalWrite(u16Pin, 1); // on period
 			Delay_Us(iOnTime);
-			digitalWrite(u8Pin, 0); // off period
+			digitalWrite(u16Pin, 0); // off period
 			Delay_Us(1000 - iOnTime);
 		} // for j
 		iOnTime += iStep;
@@ -1006,9 +1006,9 @@ void breatheLED(uint8_t u8Pin, int iPeriod)
 	iOnTime = 500;
 	for (i=0; i<iCount; i++) {
 		for (j=0; j<20; j++) { // 20ms per step
-			digitalWrite(u8Pin, 1); // on period
+			digitalWrite(u16Pin, 1); // on period
 			Delay_Us(iOnTime);
-			digitalWrite(u8Pin, 0); // off period
+			digitalWrite(u16Pin, 0); // off period
 			Delay_Us(1000 - iOnTime);
 		} // for j
 		iOnTime -= iStep;
